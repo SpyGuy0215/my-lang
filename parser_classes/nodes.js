@@ -1,7 +1,6 @@
 export class NumberNode{
     constructor(token){
         this.token = token
-        console.log('number node')
     }
 
     repr(){
@@ -14,7 +13,6 @@ export class BinOpNode{
         this.left_node = left_node
         this.op_tok = op_tok
         this.right_node = right_node
-        console.log('bin op node')
     }
 
     repr(){
@@ -26,7 +24,6 @@ export class UnaryOpNode{
     constructor(op_token, node){
         this.op_token = op_token
         this.node = node
-        console.log('unary op node')
     }
 
     repr(){

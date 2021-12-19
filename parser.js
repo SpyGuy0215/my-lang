@@ -33,7 +33,6 @@ export default class Parser{
 
     parse(){
         let result = this.expr()
-        console.log(result )
         if(!result.error && this.current_token.type != 'EOF'){
             return result.failure(new InvalidSyntaxError(
                 this.current_token.pos_start, this.current_token.pos_end,
@@ -46,7 +45,7 @@ export default class Parser{
     bin_op(func, ops){
         let result = new ParseResult()
         let left = result.register(func())
-        if(result.error){
+        if(result.error != null){
             return result
         }
 
@@ -54,9 +53,10 @@ export default class Parser{
             let op_token = this.current_token
             result.register(this.advance())
             let right = result.register(func())
-            if(result.error){
+            if(result.error != null){
                 return result
             }
+            left = new BinOpNode(left, op_token, right)
         }
 
         return result.success(left)
@@ -67,7 +67,6 @@ export default class Parser{
         let token = this.current_token
 
         if([TT_PLUS, TT_MINUS].includes(token.type)){
-            console.log('plus or minus')
             result.register(this.advance())
             let factor = result.register(this.factor())
             if(result.error){
@@ -78,7 +77,6 @@ export default class Parser{
 
         else if([TT_INT, TT_FLOAT].includes(token.type)){
             result.register(this.advance())
-            console.log('number')
             return result.success(new NumberNode(token))
         }
 
