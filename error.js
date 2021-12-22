@@ -1,7 +1,7 @@
 let RED = '\x1b[31m'
 let WHITE = '\x1b[37m'
 
-export class Error{
+class Error{
     constructor(type, start_pos, end_pos, message){
         this.type = type
         this.start_pos = start_pos
@@ -19,19 +19,19 @@ export class Error{
     }
 }
 
-export class IllegalCharError extends Error{
+class IllegalCharError extends Error{
     constructor(start_pos, end_pos, char, message){
         super('IllegalCharError', start_pos, end_pos, `Illegal character: '${char}'`)
     }
 }
 
-export class InvalidSyntaxError extends Error{
+class InvalidSyntaxError extends Error{
     constructor(start_pos, end_pos, details=''){
         super('InvalidSyntaxError', start_pos, end_pos, `Invalid syntax: ${details}`)
     }
 }
 
-export class RTError extends Error{
+class RTError extends Error{
     constructor(start_pos, end_pos, details, context){
         super('Runtime Error', start_pos, end_pos, details)
         console.log(start_pos)
@@ -62,4 +62,10 @@ export class RTError extends Error{
 
         return 'Traceback (most recent call last): \n)' + result
     }
+}
+
+module.export = {
+    IllegalCharError,
+    InvalidSyntaxError,
+    RTError
 }

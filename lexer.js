@@ -1,6 +1,12 @@
+/*
 import Position from './lexer_classes/position.js'
 import Token from './lexer_classes/token.js'
 import { IllegalCharError } from './error.js'
+*/ 
+
+const Position = require('./lexer_classes/position.js')
+const Token = require('./lexer_classes/token.js')
+const { IllegalCharError } = require('./error.js')
 
 let DIGITS = '0123456789'
 
@@ -17,8 +23,7 @@ let TT_RPAREN = 'RPAREN'
 
 let TT_EOF = 'EOF'
 
-
-export default class Lexer{
+class Lexer{
     constructor(file_name, text){
         this.file_name = file_name
         this.text = text
@@ -116,3 +121,5 @@ export default class Lexer{
         }
     }
 }
+
+module.exports = Lexer

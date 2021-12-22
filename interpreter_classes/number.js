@@ -1,6 +1,6 @@
-import { RTError } from "../error.js"
+const RTError = require('../error.js')
 
-export default class Number{
+class Number{
     constructor(value){
         this.value = value
         this.set_pos()
@@ -49,3 +49,5 @@ export default class Number{
         }
     }
 }
+
+module.exports = Number

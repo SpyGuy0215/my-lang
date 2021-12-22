@@ -1,4 +1,4 @@
-export default class Token{
+class Token{
     constructor(type, value=null, pos_start=null, pos_end=null){
         this.type = type
         this.value = value
@@ -22,3 +22,5 @@ export default class Token{
         return `${this.type}`
     }
 }
+
+module.exports = Token

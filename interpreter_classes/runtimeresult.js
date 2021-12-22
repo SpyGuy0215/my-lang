@@ -1,4 +1,4 @@
-export default class RTResult{
+class RTResult{
     constructor(){
         this.value = null
         this.error = null
@@ -21,3 +21,5 @@ export default class RTResult{
         return this
     }
 }
+
+module.exports = RTResult

@@ -1,4 +1,4 @@
-export default class ParseResult{
+class ParseResult{
     constructor(){
         this.error = null
         this.node = null
@@ -24,3 +24,5 @@ export default class ParseResult{
         return this
     }
 }
+
+module.exports = ParseResult

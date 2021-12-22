@@ -1,6 +1,7 @@
-import * as readline from 'readline'
-import {stdin as input, stdout as output} from 'process'
-import Language from './language.js'
+const readline = require('readline')
+const input = process.stdin
+const output = process.stdout
+const Language = require('./language')
 
 let rl = readline.createInterface({input, output})
 

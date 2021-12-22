@@ -1,9 +1,16 @@
+/*
 import Lexer from './lexer.js'
 import Parser from './parser.js'
 import Intepreter from './interpreter.js'
 import Context from './interpreter_classes/context.js'
+*/
 
-export default class Language{
+const Lexer = require('./lexer.js')
+const Parser = require('./parser.js')
+const Intepreter = require('./interpreter.js')
+const Context = require('./interpreter_classes/context.js')
+
+class Language{
     constructor(file_name, text){
         this.file_name = file_name
         this.text = text
@@ -33,3 +40,5 @@ export default class Language{
         return [result.value, result.error]
     }
     }
+
+module.exports = Language

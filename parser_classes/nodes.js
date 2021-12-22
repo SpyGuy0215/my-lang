@@ -1,4 +1,4 @@
-export class NumberNode{
+class NumberNode{
     constructor(token){
         this.token = token
         this.pos_start = this.token.pos_start
@@ -10,7 +10,7 @@ export class NumberNode{
     }
 }
 
-export class BinOpNode{
+class BinOpNode{
     constructor(left_node, op_tok, right_node){
         this.left_node = left_node
         this.op_tok = op_tok
@@ -24,7 +24,7 @@ export class BinOpNode{
     }
 }
 
-export class UnaryOpNode{
+class UnaryOpNode{
     constructor(op_token, node){
         this.op_token = op_token
         this.node = node
@@ -36,3 +36,7 @@ export class UnaryOpNode{
         return `${this.op_token} ${this.node}`
     }
 }
+
+module.exports.NumberNode = NumberNode
+module.exports.BinOpNode = BinOpNode
+module.exports.UnaryOpNode = UnaryOpNode

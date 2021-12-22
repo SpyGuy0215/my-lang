@@ -1,6 +1,12 @@
+/*
 import {InvalidSyntaxError} from './error.js';
 import ParseResult from './parser_classes/parseresult.js';
 import {UnaryOpNode, BinOpNode, NumberNode} from './parser_classes/nodes.js';
+*/
+
+const { InvalidSyntaxError } = require('./error.js')
+const ParseResult = require('./parser_classes/parseresult.js');
+const {UnaryOpNode, BinOpNode, NumberNode} = require('./parser_classes/nodes.js');
 
 let DIGITS = '0123456789'
 
@@ -17,7 +23,7 @@ let TT_RPAREN = 'RPAREN'
 let TT_EOF = 'EOF'
 
 
-export default class Parser{
+class Parser{
     constructor(tokens){
         this.tokens = tokens
         this.token_index = -1
@@ -115,3 +121,5 @@ export default class Parser{
     }
 
 }
+
+module.exports = Parser

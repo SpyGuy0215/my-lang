@@ -1,4 +1,4 @@
-export default class Position{
+class Position{
     constructor(idx, line, col, file_name, text){
         this.idx = idx  // index of the current character, regardless of line or column
         this.line = line
@@ -23,3 +23,5 @@ export default class Position{
     }
 
 }
+
+module.exports = Position

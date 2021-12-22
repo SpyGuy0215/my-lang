@@ -1,5 +1,10 @@
+/*
 import RTResult from './interpreter_classes/runtimeresult.js';
 import Number from './interpreter_classes/number.js';
+*/
+
+const RTResult = require('./interpreter_classes/runtimeresult.js');
+const Number = require('./interpreter_classes/number.js');
 
 let DIGITS = '0123456789'
 
@@ -15,7 +20,7 @@ let TT_RPAREN = 'RPAREN'
 
 let TT_EOF = 'EOF'
 
-export default class Intepreter{
+class Interpreter{
     constructor(){
     }
 
@@ -110,3 +115,5 @@ export default class Intepreter{
         }
     }
 }
+
+module.exports = Interpreter
