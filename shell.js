@@ -13,15 +13,17 @@ function shell(){
         }
 
         let language = new Language('shell', text)
-        let result = language.run(text)
+        let result_error = language.run(text)
 
-        if(result.error){
+        let result = result_error[0]
+        let error = result_error[1]
+
+        if(error){
             console.log(error.as_string())
         }
 
         else{
-            console.log(result.node)
-            console.log('result ^')
+            console.log(result.value)
         }
 
         shell()

@@ -11,6 +11,7 @@ let TT_PLUS = 'PLUS'
 let TT_MINUS = 'MINUS'
 let TT_MUL = 'MUL'
 let TT_DIV = 'DIV'
+let TT_POW = 'POW'
 let TT_LPAREN = 'LPAREN'
 let TT_RPAREN = 'RPAREN'
 
@@ -61,6 +62,10 @@ export default class Lexer{
             }
             else if(this.current_char == '/'){
                 tokens.push(new Token(TT_DIV, undefined, this.pos))
+                this.advance()
+            }
+            else if(this.current_char == '^'){
+                tokens.push(new Token(TT_POW, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '('){

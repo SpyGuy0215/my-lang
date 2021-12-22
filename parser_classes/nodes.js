@@ -1,6 +1,8 @@
 export class NumberNode{
     constructor(token){
         this.token = token
+        this.pos_start = this.token.pos_start
+        this.pos_end = this.token.pos_end
     }
 
     repr(){
@@ -13,6 +15,8 @@ export class BinOpNode{
         this.left_node = left_node
         this.op_tok = op_tok
         this.right_node = right_node
+        this.pos_start = this.left_node.pos_start
+        this.pos_end = this.right_node.pos_end
     }
 
     repr(){
@@ -24,6 +28,8 @@ export class UnaryOpNode{
     constructor(op_token, node){
         this.op_token = op_token
         this.node = node
+        this.pos_start = this.op_token.pos_start
+        this.pos_end = this.node.pos_end
     }
 
     repr(){
