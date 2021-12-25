@@ -1,17 +1,22 @@
 class Position{
     constructor(idx, line, col, file_name, text){
         this.idx = idx  // index of the current character, regardless of line or column
-        this.line = line
+        if(line == 0){
+            this.line = 1
+        }
+        else{
+            this.line = line
+        }
         this.col = col
         this.file_name = file_name
         this.text = text
-    }
+     }
 
     advance(current_char=null){
         this.idx++
         this.col++
 
-        if(current_char = '\n'){
+        if(current_char == '\n'){
             this.line++
             this.col = 0
         }

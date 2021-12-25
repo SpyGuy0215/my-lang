@@ -83,9 +83,10 @@ class Lexer{
             }
             else{
                 let pos_start = this.pos.copy()
+                let pos_end = this.pos.copy()
+                pos_end.advance()
                 let char = this.current_char
-                this.advance()
-                return new IllegalCharError(this.pos, this.pos, this.current_char)
+                return [null, new IllegalCharError(pos_start, pos_end, this.current_char)]
             }
         }
 
@@ -114,10 +115,10 @@ class Lexer{
 
 
         if(dot_count == 0){
-            return new Token(TT_INT, parseInt(number_str))
+            return new Token(TT_INT, parseInt(number_str), pos_start)
         }
         else{
-            return new Token(TT_FLOAT, parseFloat(number_str))
+            return new Token(TT_FLOAT, parseFloat(number_str), pos_start)
         }
     }
 }

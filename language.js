@@ -19,11 +19,11 @@ class Language{
     run(){
         //Generate tokens
         let lexer = new Lexer(this.file_name, this.text)
-        let tokens_and_error = lexer.lex()
-        let tokens = tokens_and_error[0]
-        let error = tokens_and_error[1]
-        if (error){
-            return null, error
+        let lex_result = lexer.lex()
+        let tokens = lex_result[0]
+        let error = lex_result[1]
+        if(error){
+            return [null, error]
         }
 
         //Generate Abstract Syntax Tree
@@ -34,7 +34,7 @@ class Language{
         }
 
         let interpreter = new Intepreter()
-        let context = new Context('<program>')
+        let context = new Context('<shell>')
         let result = interpreter.visit(ast.node, context)
 
         return [result.value, result.error]

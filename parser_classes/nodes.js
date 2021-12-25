@@ -37,6 +37,8 @@ class UnaryOpNode{
     }
 }
 
-module.exports.NumberNode = NumberNode
-module.exports.BinOpNode = BinOpNode
-module.exports.UnaryOpNode = UnaryOpNode
+module.exports = {
+    NumberNode: NumberNode,
+    BinOpNode: BinOpNode,
+    UnaryOpNode: UnaryOpNode
+}

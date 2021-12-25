@@ -1,5 +1,9 @@
-let RED = '\x1b[31m'
+let RED = '\x1b[91m'
 let WHITE = '\x1b[37m'
+let BLUE = '\x1b[94m'
+let BOLD = '\x1b[1m'
+
+const swa = require('./error_stuff/string_with_arrows.js')
 
 class Error{
     constructor(type, start_pos, end_pos, message){
@@ -12,9 +16,9 @@ class Error{
     as_string(){
         let result = `${this.type}: ${RED} ${this.message} \n`
         if(this.start_pos){
-            result += `File ${this.start_pos.file_name}, line ${this.start_pos.line}`
+            result += `File ${this.start_pos.file_name}, line ${this.start_pos.line} character ${this.start_pos.col + 1} ${WHITE}\n`
+            result += '\n\n' + swa.string_with_arrows(this.start_pos.text, this.start_pos, this.end_pos)
         }
-        result += `${WHITE} \n`
         return result
     }
 }
@@ -34,18 +38,16 @@ class InvalidSyntaxError extends Error{
 class RTError extends Error{
     constructor(start_pos, end_pos, details, context){
         super('Runtime Error', start_pos, end_pos, details)
-        console.log(start_pos)
         this.context = context
     }
 
     as_string(){
         let result = ''
-        console.log(this.context)
         if(this.context != null){
             result += this.generate_traceback(this.context)
         }
-        result += `${this.type}: ${RED} ${this.message} \n`
-        result += `File ${this.start_pos.file_name}, line ${this.start_pos.line} ${WHITE} \n`
+        result += `${BLUE}${this.type}: ${RED} ${this.message} ${WHITE}\n`
+        result += '\n\n' + swa.string_with_arrows(this.start_pos.text, this.start_pos, this.end_pos)
         return result
     }
 
@@ -53,19 +55,24 @@ class RTError extends Error{
         let result = ''
         let pos = this.start_pos
         let ctx = context
-
-        while(context){
-            result = `File ${pos.fn}, line ${pos.line}, in ${ctx.display_name} \n` + result
+        while(ctx){
+            if(pos.file_name = 'shell'){
+                result = `${BLUE}Line ${pos.line} character ${pos.col+1}, in ${ctx.display_name} ${WHITE} \n` + result
+            }
+            else{
+                result = `${BLUE} File ${pos.file_name}, line ${pos.line}, character {TODO} ${WHITE} \n` + result
+            }
             pos = ctx.parent_entry_pos
             ctx = ctx.parent
         }
 
-        return 'Traceback (most recent call last): \n)' + result
+        return `Traceback (most recent call last): \n` + result
     }
 }
 
-module.export = {
-    IllegalCharError,
-    InvalidSyntaxError,
-    RTError
+module.exports = {
+    Error: Error,
+    IllegalCharError: IllegalCharError,
+    InvalidSyntaxError: InvalidSyntaxError,
+    RTError: RTError
 }

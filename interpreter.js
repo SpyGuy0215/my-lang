@@ -5,6 +5,7 @@ import Number from './interpreter_classes/number.js';
 
 const RTResult = require('./interpreter_classes/runtimeresult.js');
 const Number = require('./interpreter_classes/number.js');
+const { RTError } = require('./error.js');
 
 let DIGITS = '0123456789'
 
@@ -103,7 +104,7 @@ class Interpreter{
         if(node.op_tok.type == TT_MINUS){
             let number_error = number.multed_by(new Number(-1))
             let number = number_error[0]
-            error = number_error[1]
+            error = number_error[1] 
         }
 
         if(error){

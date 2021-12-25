@@ -1,4 +1,4 @@
-const RTError = require('../error.js')
+const {RTError} = require('../error.js')
 
 class Number{
     constructor(value){
@@ -13,7 +13,7 @@ class Number{
         return this
     }
 
-    set_context(context=null){
+    set_context(context='<shell>'){
         this.context = context
         return this
     }
@@ -42,11 +42,10 @@ class Number{
     dived_by(other){
         if(other instanceof Number){
             if(other.value == 0){
-                console.log(other)
-                return [null, new RTError(other.pos_start, other.pos_end, 'Division by zero', this.context)]
+                return [null, new RTError(other.pos_start, other.pos_end, "Don't try to break me, you can't divide by zero smh", this.context)]
             }
             return [new Number(this.value / other.value).set_context(this.context), null]
-        }
+        } 
     }
 }
 
