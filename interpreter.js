@@ -6,20 +6,7 @@ import Number from './interpreter_classes/number.js';
 const RTResult = require('./interpreter_classes/runtimeresult.js');
 const Number = require('./interpreter_classes/number.js');
 const { RTError } = require('./error.js');
-
-let DIGITS = '0123456789'
-
-let TT_INT = 'INT'
-let TT_FLOAT = 'FLOAT'
-
-let TT_PLUS = 'PLUS'
-let TT_MINUS = 'MINUS'
-let TT_MUL = 'MUL'
-let TT_DIV = 'DIV'
-let TT_LPAREN = 'LPAREN'
-let TT_RPAREN = 'RPAREN'
-
-let TT_EOF = 'EOF'
+const TT = require('./constants.js');
 
 class Interpreter{
     constructor(){
@@ -61,26 +48,32 @@ class Interpreter{
             return res
         }
 
-        if(node.op_tok.type == TT_PLUS){
+        if(node.op_tok.type == TT.TT_PLUS){
             let result_error = left.added_to(right)
             result = result_error[0]
             error = result_error[1]
         }
 
-        if(node.op_tok.type == TT_MINUS){
+        else if(node.op_tok.type == TT.TT_MINUS){
             let result_error = left.subbed_by(right)
             result = result_error[0]
             error = result_error[1]
         }
 
-        if(node.op_tok.type == TT_MUL){
+        else if(node.op_tok.type == TT.TT_MUL){
             let result_error = left.multed_by(right)
             result = result_error[0]
             error = result_error[1]
         }
 
-        if(node.op_tok.type == TT_DIV){
+        else if(node.op_tok.type == TT.TT_DIV){
             let result_error = left.dived_by(right)
+            result = result_error[0]
+            error = result_error[1]
+        }
+
+        else if(node.op_tok.type == TT.TT_POW){
+            let result_error = left.powed_by(right)
             result = result_error[0]
             error = result_error[1]
         }
@@ -101,7 +94,7 @@ class Interpreter{
         }
 
         let error = null
-        if(node.op_tok.type == TT_MINUS){
+        if(node.op_tok.type == TT.TT_MINUS){
             let number_error = number.multed_by(new Number(-1))
             let number = number_error[0]
             error = number_error[1] 

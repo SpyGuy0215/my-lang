@@ -7,21 +7,7 @@ import { IllegalCharError } from './error.js'
 const Position = require('./lexer_classes/position.js')
 const Token = require('./lexer_classes/token.js')
 const { IllegalCharError } = require('./error.js')
-
-let DIGITS = '0123456789'
-
-let TT_INT = 'INT'
-let TT_FLOAT = 'FLOAT'
-
-let TT_PLUS = 'PLUS'
-let TT_MINUS = 'MINUS'
-let TT_MUL = 'MUL'
-let TT_DIV = 'DIV'
-let TT_POW = 'POW'
-let TT_LPAREN = 'LPAREN'
-let TT_RPAREN = 'RPAREN'
-
-let TT_EOF = 'EOF'
+const TT = require('./constants.js')
 
 class Lexer{
     constructor(file_name, text){
@@ -50,35 +36,35 @@ class Lexer{
                 this.advance()
             }
 
-            else if(DIGITS.includes(this.current_char)){
+            else if(TT.DIGITS.includes(this.current_char)){
                 tokens.push(this.make_number())
             }
             else if(this.current_char == '+'){
-                tokens.push(new Token(TT_PLUS, undefined, this.pos))
+                tokens.push(new Token(TT.TT_PLUS, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '-'){
-                tokens.push(new Token(TT_MINUS, undefined, this.pos))
+                tokens.push(new Token(TT.TT_MINUS, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '*'){
-                tokens.push(new Token(TT_MUL, undefined, this.pos))
+                tokens.push(new Token(TT.TT_MUL, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '/'){
-                tokens.push(new Token(TT_DIV, undefined, this.pos))
+                tokens.push(new Token(TT.TT_DIV, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '^'){
-                tokens.push(new Token(TT_POW, undefined, this.pos))
+                tokens.push(new Token(TT.TT_POW, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '('){
-                tokens.push(new Token(TT_LPAREN, undefined, this.pos))
+                tokens.push(new Token(TT.TT_LPAREN, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == ')')  {
-                tokens.push(new Token(TT_RPAREN, undefined, this.pos))
+                tokens.push(new Token(TT.TT_RPAREN, undefined, this.pos))
                 this.advance()
             }
             else{
@@ -90,7 +76,7 @@ class Lexer{
             }
         }
 
-        tokens.push(new Token(TT_EOF, undefined, this.pos))
+        tokens.push(new Token(TT.TT_EOF, undefined, this.pos))
         return [tokens, null]
     }
 
@@ -99,7 +85,7 @@ class Lexer{
         let dot_count = 0
         let pos_start = this.pos.copy()
 
-        while(this.current_char != null && (DIGITS.includes(this.current_char) || this.current_char == '.') ){
+        while(this.current_char != null && (TT.DIGITS.includes(this.current_char) || this.current_char == '.') ){
             if(this.current_char == '.'){
                 if(dot_count == 1){
                     break
@@ -115,10 +101,10 @@ class Lexer{
 
 
         if(dot_count == 0){
-            return new Token(TT_INT, parseInt(number_str), pos_start)
+            return new Token(TT.TT_INT, parseInt(number_str), pos_start)
         }
         else{
-            return new Token(TT_FLOAT, parseFloat(number_str), pos_start)
+            return new Token(TT.TT_FLOAT, parseFloat(number_str), pos_start)
         }
     }
 }

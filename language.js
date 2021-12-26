@@ -1,10 +1,3 @@
-/*
-import Lexer from './lexer.js'
-import Parser from './parser.js'
-import Intepreter from './interpreter.js'
-import Context from './interpreter_classes/context.js'
-*/
-
 const Lexer = require('./lexer.js')
 const Parser = require('./parser.js')
 const Intepreter = require('./interpreter.js')

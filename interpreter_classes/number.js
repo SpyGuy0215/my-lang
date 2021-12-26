@@ -47,6 +47,12 @@ class Number{
             return [new Number(this.value / other.value).set_context(this.context), null]
         } 
     }
+
+    powed_by(other){
+        if(other instanceof Number){
+            return [new Number(Math.pow(this.value, other.value)).set_context(this.context), null]
+        }
+    }
 }
 
 module.exports = Number
