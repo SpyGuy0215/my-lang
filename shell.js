@@ -4,16 +4,21 @@ const output = process.stdout
 const Language = require('./language')
 const About_Lang = require('./about_lang')
 
+const parseArguments = require('./parseArguments').parseArguments
+
 let rl = readline.createInterface({input, output})
 
-console.log('Welcome to the shell! \n')
 
 function shell(){
     rl.question('>> ', (text) => {
-        if(text == 'exit'){
+        if(text == '.exit'){
             return rl.close()
+            process.exit()
         }
-        else if(text == 'clear'){
+        else if(text == '.help'){
+            console.log('Interact with this console as if it was a mylang program, line by line. ')
+        }
+        else if(text == '.clear'){
             console.clear()
         }
 
@@ -30,11 +35,11 @@ function shell(){
             let error = language_result[1]
 
             if(error){
-                console.log(error.as_string())
+                output.write(error.as_string() + '\n')
             }
 
             else{
-                console.log(result.value)
+                output.write(result.value + '\n')
             }
         }
 
@@ -43,4 +48,21 @@ function shell(){
     
 }
 
-shell()
+let parsedArgs = parseArguments(process.argv)
+
+if(parsedArgs.help){
+    About_Lang.help()
+    process.exit()
+}
+else if(parsedArgs.version){
+    About_Lang.version()
+    process.exit()
+}
+else if(parsedArgs.about){
+    About_Lang.about()
+    process.exit()
+}
+else {
+    console.log('Welcome to the shell! Type .help for help\n')
+    shell()
+}
