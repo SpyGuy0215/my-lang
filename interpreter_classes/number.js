@@ -115,6 +115,10 @@ class Number{
         return [new Number(this.value ? 0 : 1, true).set_context(this.context), null]
     }
 
+    is_true(){
+        return this.value != 0
+    }
+
     copy(){
         let copy = new Number(this.value, this.boolean)
         copy.set_pos(this.pos_start, this.pos_end)

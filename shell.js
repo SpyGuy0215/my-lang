@@ -40,12 +40,14 @@ function shell(){
             let language_result = language.run(text)
             let result = language_result[0]
             let error = language_result[1]
+            console.log(language_result)
 
             if(error){
                 console.log(error.as_string())
             }
 
             else{
+                console.log(result)
                 if(result.type == 'NUMBER'){
                     if(result.boolean){
                         console.log(`${result.boolean}`.yellow)

@@ -70,8 +70,16 @@ class Lexer{
                 tokens.push(new Token(TT.TT_LPAREN, undefined, this.pos))
                 this.advance()
             }
-            else if(this.current_char == ')')  {
+            else if(this.current_char == ')'){
                 tokens.push(new Token(TT.TT_RPAREN, undefined, this.pos))
+                this.advance()
+            }
+            else if(this.current_char == '{'){
+                tokens.push(new Token(TT.TT_LBRACE, undefined, this.pos))
+                this.advance()
+            }
+            else if(this.current_char == '}'){
+                tokens.push(new Token(TT.TT_RBRACE, undefined, this.pos))
                 this.advance()
             }
             else if(this.current_char == '!'){
@@ -140,6 +148,7 @@ class Lexer{
         }
 
         let tok_type = null
+        console.log(id_str)
         if(TT.KEYWORDS.includes(id_str)){
             tok_type = TT.TT_KEYWORD
         }

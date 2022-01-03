@@ -32,6 +32,8 @@ class Language{
             return [null, ast.error]
         }
 
+        console.log(ast)
+
         let interpreter = new Intepreter()
         let context = new Context('<shell>')
         context.symbol_table = global_symbol_table

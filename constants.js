@@ -8,8 +8,11 @@ const TT_MINUS = 'MINUS'
 const TT_MUL = 'MUL'
 const TT_DIV = 'DIV'
 const TT_POW = 'POW'
-const TT_LPAREN = 'LPAREN'
-const TT_RPAREN = 'RPAREN'
+
+const TT_LPAREN = 'LPAREN'           // (
+const TT_RPAREN = 'RPAREN'           // )    
+const TT_LBRACE = 'LBRACE'   // {
+const TT_RBRACE = 'RBRACE' // }
 
 const TT_EQ = 'EQ'
 const TT_EE = 'EE'
@@ -31,7 +34,10 @@ const KEYWORDS = [
     'var',
     'and',
     'or',
-    'not'
+    'not',
+    'if',
+    'elif',
+    'else',
 ]
 
 module.exports = {
@@ -50,6 +56,8 @@ module.exports = {
     TT_POW,
     TT_LPAREN,
     TT_RPAREN,
+    TT_LBRACE,
+    TT_RBRACE,
     TT_EQ,
     TT_EE,
     TT_NE,

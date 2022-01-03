@@ -16,6 +16,7 @@ class Interpreter{
 
     visit(node, context){
         let method_name = `visit_${node.constructor.name}`
+        console.log(method_name)
         let method = this[method_name].bind(this)
 
         if(!method){
@@ -185,6 +186,41 @@ class Interpreter{
         else{
             return res.success(number.set_pos(node.pos_start, node.pos_end))
         }
+    }
+
+    visit_IfNode(node, context){
+        let res = new RTResult()
+
+        console.log(node.cases[0])
+
+        for(let i = 0; i < node.cases.length; i++){
+            let condition = node.cases[i][0]
+            let expr = node.cases[i][1]
+            let condition_value = res.register(this.visit(condition, context))
+
+            if(res.error){
+                return res
+            }
+
+            if(condition_value.is_true()){
+                let expr_value = res.register(this.visit(expr, context))
+                if(res.error){
+                    return res
+                }
+                return res.success(expr_value)
+            }
+        }
+
+        if(node.else_case){
+            console.log('else found')
+            let expr_value = res.register(this.visit(node.else_case, context))
+            if(res.error){
+                return res
+            }
+            return res.success(expr_value)
+        }
+
+        return res.success(null)
     }
 }
 

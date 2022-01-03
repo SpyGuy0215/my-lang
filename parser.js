@@ -6,7 +6,7 @@ import {UnaryOpNode, BinOpNode, NumberNode} from './parser_classes/nodes.js';
 
 const { InvalidSyntaxError } = require('./error.js')
 const ParseResult = require('./parser_classes/parseresult.js');
-const {UnaryOpNode, BinOpNode, NumberNode, VarAccessNode, VarAssignNode} = require('./parser_classes/nodes.js');
+const {UnaryOpNode, BinOpNode, NumberNode, VarAccessNode, VarAssignNode, IfNode} = require('./parser_classes/nodes.js');
 const TT = require('./constants');
 
 class Parser{
@@ -62,6 +62,123 @@ class Parser{
         return res.success(left)
     }
 
+    if_expr(){
+        let res = new ParseResult()
+        let cases = []
+        let else_case = null
+
+        if(!this.current_token.matches(TT.TT_KEYWORD, 'if')){
+            return res.failure(new InvalidSyntaxError(
+                this.current_token.pos_start, this.current_token.pos_end,
+                "Expected 'if'"
+            ))
+        }
+
+        res.register_advancement()
+        this.advance()
+
+        let condition = res.register(this.expr())
+        if(res.error){
+            return res
+        }
+
+        if(!this.current_token.matches(TT.TT_LBRACE)){
+            return res.failure(new InvalidSyntaxError(
+                this.current_token.pos_start, this.current_token.pos_end,
+                "Expected '{'"
+            ))
+        }
+
+        res.register_advancement()
+        this.advance()
+
+        let expr = res.register(this.expr())
+        if(res.error){
+            return res
+        }
+
+        if(!this.current_token.matches(TT.TT_RBRACE)){
+            return res.failure(new InvalidSyntaxError(
+                this.current_token.pos_start, this.current_token.pos_end,
+                "Expected '}'"
+            ))
+        }
+
+        res.register_advancement()
+        this.advance()
+
+        cases.push([condition, expr])
+
+        while(this.current_token.matches(TT.TT_KEYWORD, 'elif')){
+            res.register_advancement()
+            this.advance()
+
+            condition = res.register(this.expr())
+            if(res.error){
+                return res
+            }
+
+            if(!this.current_token.matches(TT.TT_LBRACE)){
+                return res.failure(new InvalidSyntaxError(
+                    this.current_token.pos_start, this.current_token.pos_end,
+                    "Expected '{'"
+                ))
+            }
+
+            res.register_advancement()
+            this.advance()
+
+            expr = res.register(this.expr())
+            if(res.error){
+                return res
+            }
+
+            if(!this.current_token.matches(TT.TT_RBRACE)){
+                return res.failure(new InvalidSyntaxError(
+                    this.current_token.pos_start, this.current_token.pos_end,
+                    "Expected '}'"
+                ))
+            }
+    
+            res.register_advancement()
+            this.advance()
+
+            cases.push([condition, expr])
+        }
+        
+        if(this.current_token.matches(TT.TT_KEYWORD, 'else')){
+            res.register_advancement()
+            this.advance()
+
+            if(!this.current_token.matches(TT.TT_LBRACE)){
+                return res.failure(new InvalidSyntaxError(
+                    this.current_token.pos_start, this.current_token.pos_end,
+                    "Expected '{'"
+                ))
+            }
+
+            res.register_advancement()
+            this.advance()
+
+            else_case = res.register(this.expr())
+            if(res.error){
+                return res
+            }
+
+            if(!this.current_token.matches(TT.TT_RBRACE)){
+                return res.failure(new InvalidSyntaxError(
+                    this.current_token.pos_start, this.current_token.pos_end,
+                    "Expected '}'"
+                ))
+            }
+    
+            res.register_advancement()
+            this.advance()
+        }
+
+        return res.success(new IfNode(cases, else_case))
+    }
+
 
     atom(){
         let res = new ParseResult()
@@ -97,6 +214,14 @@ class Parser{
                     "Expected ')'"                    
                 ))
             }
+        }
+
+        else if(token.matches(TT.TT_KEYWORD, 'if')){
+            let if_expr = res.register(this.if_expr())
+            if(res.error){
+                return res
+            }
+            return res.success(if_expr)
         }
     
         return res.failure(new InvalidSyntaxError(
