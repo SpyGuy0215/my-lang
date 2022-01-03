@@ -1,14 +1,21 @@
 const readline = require('readline')
+const colors = require('colors')
+
 const input = process.stdin
 const output = process.stdout
 const Language = require('./language')
+const SymbolTable = require('./interpreter_classes/symbol_table.js')
 const About_Lang = require('./about_lang')
 
 const parseArguments = require('./parseArguments').parseArguments
 
 let rl = readline.createInterface({input, output})
 
+colors.setTheme({
+    result: 'green',
+})
 
+ 
 function shell(){
     rl.question('>> ', (text) => {
         if(text == '.exit'){
@@ -16,7 +23,7 @@ function shell(){
             process.exit()
         }
         else if(text == '.help'){
-            console.log('Interact with this console as if it was a mylang program, line by line. ')
+            console.log('Interact with this console as if it was a mylang program, line by line.')
         }
         else if(text == '.clear'){
             console.clear()
@@ -35,11 +42,18 @@ function shell(){
             let error = language_result[1]
 
             if(error){
-                output.write(error.as_string() + '\n')
+                console.log(error.as_string())
             }
 
             else{
-                output.write(result.value + '\n')
+                if(result.type == 'NUMBER'){
+                    if(result.boolean){
+                        console.log(`${result.boolean}`.yellow)
+                    }
+                    else{
+                        console.log(`${result.value}`.yellow)
+                    }
+                }
             }
         }
 
@@ -50,19 +64,11 @@ function shell(){
 
 let parsedArgs = parseArguments(process.argv)
 
-if(parsedArgs.help){
-    About_Lang.help()
+if(parsedArgs.run){
+    console.log('Running files is not available yet, please use the shell for now')
     process.exit()
 }
-else if(parsedArgs.version){
-    About_Lang.version()
-    process.exit()
-}
-else if(parsedArgs.about){
-    About_Lang.about()
-    process.exit()
-}
-else {
+else{
     console.log('Welcome to the shell! Type .help for help\n')
     shell()
 }

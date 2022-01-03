@@ -1,3 +1,11 @@
+const colors = require('colors')
+
+colors.setTheme({
+    arrow: 'brightBlue',
+    clear: 'white',
+    bold: 'bold',
+})
+
 string_with_arrows = (text, pos_start, pos_end) => {
     let result = ''
 
@@ -25,7 +33,7 @@ string_with_arrows = (text, pos_start, pos_end) => {
 
         result += line + '\n'
         let empty_string = ' '
-        let arrow = '^'
+        let arrow = '^'.arrow.bold
         result += empty_string.repeat(col_start) + arrow.repeat(col_end - col_start)
 
         index_start = index_end

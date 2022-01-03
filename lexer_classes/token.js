@@ -2,8 +2,8 @@ class Token{
     constructor(type, value=null, pos_start=null, pos_end=null){
         this.type = type
         this.value = value
-        this.pos_start = -69
-        this.pos_end = -69
+        this.pos_start = -123
+        this.pos_end = -123
 
         if(pos_start){
             this.pos_start = pos_start.copy()
@@ -12,8 +12,12 @@ class Token{
         }
 
         if(pos_end){
-            this.pos_end = pos_end
+            this.pos_end = pos_end.copy()
         }
+    }
+
+    matches(type, value){
+        return this.type == type && this.value == value
     }
 
     repr(){

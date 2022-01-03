@@ -1,3 +1,12 @@
+const c = require('args')
+const colors = require('colors')
+
+colors.setTheme({
+    error: 'red',
+    warning: 'yellow',
+    clear: 'white'
+})
+
 let RED = '\x1b[91m'
 let WHITE = '\x1b[37m'
 let BLUE = '\x1b[94m'
@@ -14,9 +23,9 @@ class Error{
     }
 
     as_string(){
-        let result = `${this.type}: ${RED} ${this.message} \n`
+        let result = `${this.type}: ${this.message} \n`.error
         if(this.start_pos){
-            result += `File ${this.start_pos.file_name}, line ${this.start_pos.line} character ${this.start_pos.col + 1} ${WHITE}\n`
+            result += `File ${this.start_pos.file_name}, line ${this.start_pos.line} character ${this.start_pos.col + 1}`.error + '\n'.clear
             result += '\n\n' + swa.string_with_arrows(this.start_pos.text, this.start_pos, this.end_pos)
         }
         return result
@@ -35,6 +44,12 @@ class InvalidSyntaxError extends Error{
     }
 }
 
+class ExpectedCharError extends Error{
+    constructor(start_pos, end_pos, details){
+        super('ExpectedCharError', start_pos, end_pos, `Expected '${details}'`)
+    }
+}
+
 class RTError extends Error{
     constructor(start_pos, end_pos, details, context){
         super('Runtime Error', start_pos, end_pos, details)
@@ -46,7 +61,7 @@ class RTError extends Error{
         if(this.context != null){
             result += this.generate_traceback(this.context)
         }
-        result += `${BLUE}${this.type}: ${RED} ${this.message} ${WHITE}\n`
+        result += `${this.type}: ${this.message} ${WHITE}\n`.error
         result += '\n\n' + swa.string_with_arrows(this.start_pos.text, this.start_pos, this.end_pos)
         return result
     }
@@ -57,10 +72,10 @@ class RTError extends Error{
         let ctx = context
         while(ctx){
             if(pos.file_name = 'shell'){
-                result = `${BLUE}Line ${pos.line} character ${pos.col+1}, in ${ctx.display_name} ${WHITE} \n` + result
+                result = `Line ${pos.line} character ${pos.col+1}, in ${ctx.display_name} ${WHITE} \n` + result
             }
             else{
-                result = `${BLUE} File ${pos.file_name}, line ${pos.line}, character {TODO} ${WHITE} \n` + result
+                result = `File ${pos.file_name}, line ${pos.line}, character {TODO} ${WHITE} \n` + result
             }
             pos = ctx.parent_entry_pos
             ctx = ctx.parent

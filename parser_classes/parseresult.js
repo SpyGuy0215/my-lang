@@ -2,16 +2,19 @@ class ParseResult{
     constructor(){
         this.error = null
         this.node = null
+        this.advance_count = 0
+    }
+
+    register_advancement(){
+        this.advance_count += 1
     }
 
     register(res){
-        if(res instanceof ParseResult){
-            if(res.error){
-                this.error = res.error
-            }
-            return res.node
+        this.advance_count += res.advance_count
+        if(res.error){
+            this.error = res.error
         }
-        return res
+        return res.node
     }
 
     success(node){
@@ -20,7 +23,9 @@ class ParseResult{
     }
 
     failure(error){
-        this.error = error
+        if(!this.error || this.advance_count == 0){
+            this.error = error
+        }
         return this
     }
 }

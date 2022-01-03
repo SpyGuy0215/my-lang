@@ -1,8 +1,17 @@
 const {RTError} = require('../error.js')
 
 class Number{
-    constructor(value){
+    constructor(value, boolean=false){
         this.value = value
+        if(boolean){
+            if(typeof(boolean) == 'boolean'){
+                this.value == 1 ? this.boolean = 'true' : this.boolean = 'false'
+            }
+            else {
+                this.boolean = boolean
+            }
+        }
+        this.type = 'NUMBER'
         this.set_pos()
         this.set_context()
     }
@@ -52,6 +61,65 @@ class Number{
         if(other instanceof Number){
             return [new Number(Math.pow(this.value, other.value)).set_context(this.context), null]
         }
+    }
+
+    get_comparison_eq(other){
+        if(other instanceof Number){
+            return [new Number(this.value == other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    get_comparison_ne(other){
+        if(other instanceof Number){
+            return [new Number(this.value != other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    get_comparison_lt(other){
+        if(other instanceof Number){
+            return [new Number(this.value < other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    get_comparison_gt(other){
+        if(other instanceof Number){
+            return [new Number(this.value > other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    get_comparison_lte(other){
+        if(other instanceof Number){
+            return [new Number(this.value <= other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    get_comparison_gte(other){
+        if(other instanceof Number){
+            return [new Number(this.value >= other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    anded_by(other){
+        if(other instanceof Number){
+            return [new Number(this.value && other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    ored_by(other){
+        if(other instanceof Number){
+            return [new Number(this.value || other.value ? 1 : 0, true).set_context(this.context), null]
+        }
+    }
+
+    notted(){
+        return [new Number(this.value ? 0 : 1, true).set_context(this.context), null]
+    }
+
+    copy(){
+        let copy = new Number(this.value, this.boolean)
+        copy.set_pos(this.pos_start, this.pos_end)
+        copy.set_context(this.context)
+        return copy
     }
 }
 

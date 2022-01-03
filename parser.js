@@ -6,7 +6,7 @@ import {UnaryOpNode, BinOpNode, NumberNode} from './parser_classes/nodes.js';
 
 const { InvalidSyntaxError } = require('./error.js')
 const ParseResult = require('./parser_classes/parseresult.js');
-const {UnaryOpNode, BinOpNode, NumberNode} = require('./parser_classes/nodes.js');
+const {UnaryOpNode, BinOpNode, NumberNode, VarAccessNode, VarAssignNode} = require('./parser_classes/nodes.js');
 const TT = require('./constants');
 
 class Parser{
@@ -24,70 +24,84 @@ class Parser{
     }
 
     parse(){
-        let result = this.expr()
-        if(!result.error && this.current_token.type != 'EOF'){
-            return result.failure(new InvalidSyntaxError(
+        let res = this.expr()
+        if(!res.error && this.current_token.type != 'EOF'){
+            return res.failure(new InvalidSyntaxError(
                 this.current_token.pos_start, this.current_token.pos_end,
-                "Expected an operator"
+                "Expected an operator (math and/or comparison)"
             ))
         }
-        return result
+        return res
     }
 
     bin_op(func_a, ops, func_b=null){
         if(func_b == null){
             func_b = func_a
         }
-        let result = new ParseResult()
-        let left = result.register(func_a())
-        if(result.error != null){
-            return result
+        let res = new ParseResult()
+        let left = res.register(func_a())
+        if(res.error != null){
+            return res
         }
 
-        while(ops.includes(this.current_token.type)){
+        function array_element_check(element){
+            return element.includes(this.current_token.type) && element.includes(this.current_token.value)
+        }
+
+        while(ops.includes(this.current_token.type) || ops.some(array_element_check.bind(this))){
             let op_token = this.current_token
-            result.register(this.advance())
-            let right = result.register(func_b())
-            if(result.error != null){
-                return result
+            res.register_advancement()
+            this.advance()
+            let right = res.register(func_b())
+            if(res.error != null){
+                return res
             }
             left = new BinOpNode(left, op_token, right)
         }
 
-        return result.success(left)
+        return res.success(left)
     }
 
 
     atom(){
-        let result = new ParseResult()
+        let res = new ParseResult()
         let token = this.current_token
 
         if([TT.TT_INT, TT.TT_FLOAT].includes(token.type)){
-            result.register(this.advance())
-            return result.success(new NumberNode(token))
+            res.register_advancement()
+            this.advance()
+            return res.success(new NumberNode(token))
+        }
+
+        else if(token.type == TT.TT_IDENTIFIER){
+            res.register_advancement()
+            this.advance()
+            return res.success(new VarAccessNode(token))
         }
 
         else if(token.type == TT.TT_LPAREN){
-            result.register(this.advance())
-            let expr = result.register(this.expr())
-            if(result.error){
-                return result
+            res.register_advancement()
+            this.advance()
+            let expr = res.register(this.expr())
+            if(res.error){
+                return res
             }
             if(this.current_token.type == TT.TT_RPAREN){
-                result.register(this.advance())
-                return result.success(expr)
+                res.register_advancement()
+                this.advance()
+                return res.success(expr)
             }
             else{
-                return result.failure(new InvalidSyntaxError(
+                return res.failure(new InvalidSyntaxError(
                     this.current_token.pos_start, this.current_token.pos_end,
                     "Expected ')'"                    
                 ))
             }
         }
     
-        return result.failure(new InvalidSyntaxError(
+        return res.failure(new InvalidSyntaxError(
             this.current_token.pos_start, this.current_token.pos_end,
-            "Expected int or float, '+', '-', or '('"
+            "Expected int/float, identifier, '+', '-', or '('"
         ))
     }
 
@@ -100,8 +114,9 @@ class Parser{
         let token = this.current_token
         
         if([TT.TT_PLUS, TT.TT_MINUS].includes(token.type)){
-            res.register(this.advance())
-            let factor = res.register(this.factor().bind(this))
+            res.register_advancement()
+            this.advance()
+            let factor = res.register(this.factor())
             if(res.error){
                 return res
             }
@@ -112,13 +127,85 @@ class Parser{
     }
 
     term(){
-        let result = this.bin_op(this.factor.bind(this), [TT.TT_MUL, TT.TT_DIV])
-        return result 
+        return this.bin_op(this.factor.bind(this), [TT.TT_MUL, TT.TT_DIV])
+    }
+
+    arith_expr(){
+        return this.bin_op(this.term.bind(this), [TT.TT_PLUS, TT.TT_MINUS])
+    }
+
+    comp_expr(){
+        let res = new ParseResult()
+
+        if(this.current_token.matches(TT.TT_KEYWORD, 'not')){
+            let op_token = this.current_token
+            res.register_advancement()
+            this.advance()
+
+            let node = res.register(this.comp_expr())
+            if(res.error){
+                return res
+            }
+            return res.success(new UnaryOpNode(op_token, node))
+        }
+
+        let node = res.register(this.bin_op(this.arith_expr.bind(this), [TT.TT_EE, TT.TT_NE, TT.TT_LT, TT.TT_GT, TT.TT_LTE, TT.TT_GTE]))
+
+        if(res.error){
+            return res.failure(new InvalidSyntaxError(
+                this.current_token.pos_start, this.current_token.pos_end,
+                'Expected int/float, identifier, "+", "-", "(" or "not"'
+            ))
+        }
+
+        return res.success(node)
     }
   
     expr(){
-        let result = this.bin_op(this.term.bind(this), [TT.TT_PLUS, TT.TT_MINUS])
-        return result
+        let res = new ParseResult()
+
+        if(this.current_token.matches(TT.TT_KEYWORD, 'var')){
+            res.register_advancement()
+            this.advance()
+            if(this.current_token.type != TT.TT_IDENTIFIER){
+                return res.failure(new InvalidSyntaxError(
+                    this.current_token.pos_start, this.current_token.pos_end,
+                    "Expected an identifier"
+                ))
+            }
+
+            let var_name = this.current_token
+            res.register_advancement()
+            this.advance()
+
+            if(this.current_token.type != TT.TT_EQ){
+                return res.failure(new InvalidSyntaxError(
+                    this.current_token.pos_start, this.current_token.pos_end,
+                    "Expected '='"
+                ))
+            }
+
+            res.register_advancement()
+            this.advance()
+
+            let expr_res = res.register(this.expr())
+            if(res.error){
+                return res
+            }
+
+            return res.success(new VarAssignNode(var_name, expr_res))
+        }
+
+        let node = res.register(this.bin_op(this.comp_expr.bind(this), [[TT.TT_KEYWORD, 'and'], [TT.TT_KEYWORD, 'or']]))
+
+        if(res.error){
+            return res.failure(new InvalidSyntaxError(
+                this.current_token.pos_start, this.current_token.pos_end,
+                "Expected 'var', int/float, '+', '-', '(' or 'not'"
+            ))
+        }
+
+        return res.success(node)
     }
 
 }
